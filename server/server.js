@@ -15,7 +15,7 @@ const io = new Server(server, {
 });
 
 app.use(
-  cors({  
+  cors({
     origin: `http://localhost:5173`,
     methods: ["GET", "POST"],
     credentials: true,
@@ -29,6 +29,16 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   console.log("User Connected");
   console.log("Id", socket.id);
+  socket.emit("welcome", "welcome to the server");
+  socket.broadcast.emit("broadcast", `Broadcast msg id : ${socket.id}`);
+
+  socket.on("msg", (data) => {
+    console.log(data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("disconnect", `User is disconnected : ${socket.id}`);
+  });
 });
 
 server.listen(port, () => {
